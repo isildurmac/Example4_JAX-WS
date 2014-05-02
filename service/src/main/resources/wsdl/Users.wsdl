@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                         xmlns:tns="http://tutoriales.cdae.uci.cu/Users/" 
+                         xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                         xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+                         xmlns:sc="http://schemas.sun.com/2006/03/wss/server" 
+                         xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy" 
+                         xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust" 
+                         xmlns:wsaw="http://www.w3.org/2005/08/addressing" 
+                         xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" 
+                         xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy" 
+                         name="Users"
+                         targetNamespace="http://tutoriales.cdae.uci.cu/Users/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://tutoriales.cdae.uci.cu/Users/">
+			<xsd:element name="listUsers" type="xsd:string">
+
+            </xsd:element>
+			<xsd:element name="listUsersResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="usuarios" type="tns:User" maxOccurs="unbounded" minOccurs="1"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getUserbyID">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="id" type="xsd:int"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getUserbyIDResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="usuario" type="tns:User"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:complexType name="User">
+				<xsd:sequence>
+					<xsd:element name="id" type="xsd:int"/>
+					<xsd:element name="name" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="listUsersRequest">
+
+    </wsdl:message>
+	<wsdl:message name="listUsersResponse">
+		<wsdl:part name="parameters" element="tns:listUsersResponse"/>
+	</wsdl:message>
+	<wsdl:message name="getUserbyIDRequest">
+		<wsdl:part name="parameters" element="tns:getUserbyID"/>
+	</wsdl:message>
+	<wsdl:message name="getUserbyIDResponse">
+		<wsdl:part name="parameters" element="tns:getUserbyIDResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="UsersPortType">
+		<wsdl:operation name="listUsers">
+			<wsdl:input message="tns:listUsersRequest"/>
+			<wsdl:output message="tns:listUsersResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="getUserbyID">
+			<wsdl:input message="tns:getUserbyIDRequest"/>
+			<wsdl:output message="tns:getUserbyIDResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="UsersBinding" type="tns:UsersPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsp:PolicyReference URI="#UsersBindingPolicy"/>
+		<wsdl:operation name="listUsers">
+			<soap:operation soapAction="http://tutoriales.cdae.uci.cu/Users/listUsers"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getUserbyID">
+			<soap:operation soapAction="http://tutoriales.cdae.uci.cu/Users/getUserbyID"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="UsersService">
+		<wsdl:port name="UsersPort" binding="tns:UsersBinding">
+			<soap:address location="https://localhost:8443/Example4_JAX-WS/UsersService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<wsp:Policy wsu:Id="UsersBindingPolicy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<wsaw:UsingAddressing xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" wsp:Optional="true"/>
+				<sp:TransportBinding>
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false"/>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Lax/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic128/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+					</wsp:Policy>
+				</sp:TransportBinding>
+				<sp:SignedSupportingTokens>
+					<wsp:Policy>
+						<sp:UsernameToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+							<wsp:Policy>
+								<sp:WssUsernameToken10/>
+							</wsp:Policy>
+						</sp:UsernameToken>
+					</wsp:Policy>
+				</sp:SignedSupportingTokens>
+				<sp:Wss11/>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+</wsdl:definitions>
